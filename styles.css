@@ -303,8 +303,9 @@ p {
 }
 
 .hero-logo {
-    width: 70%;
-    max-width: 400px;
+    width: 50%;
+    max-width: 250px;
+    min-width: 180px;
     height: auto;
     filter: drop-shadow(0 8px 25px rgba(56, 36, 23, 0.15));
     transition: all 0.3s ease;
@@ -823,8 +824,9 @@ p {
     }
     
     .hero-logo {
-        width: 70%;
-        max-width: 280px;
+        width: 60%;
+        max-width: 200px;
+        min-width: 150px;
     }
     
 }
