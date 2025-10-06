@@ -1,5 +1,12 @@
-// Mobile Navigation
+// Main initialization
 document.addEventListener('DOMContentLoaded', function() {
+    // Set current year in footer
+    const currentYearElement = document.getElementById('current-year');
+    if (currentYearElement) {
+        currentYearElement.textContent = new Date().getFullYear();
+    }
+
+    // Mobile Navigation
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
     
@@ -16,6 +23,111 @@ document.addEventListener('DOMContentLoaded', function() {
                 hamburger.classList.remove('active');
             });
         });
+    }
+
+    // Form field animations and validation
+    document.querySelectorAll('.form-group input, .form-group select, .form-group textarea').forEach(field => {
+        // Add 'has-value' class when field has content
+        function checkValue() {
+            if (field.value.trim() !== '') {
+                field.classList.add('has-value');
+            } else {
+                field.classList.remove('has-value');
+            }
+        }
+        
+        field.addEventListener('input', checkValue);
+        field.addEventListener('change', checkValue);
+        
+        // Check initial value
+        checkValue();
+        
+        // Remove error styling on focus
+        field.addEventListener('focus', function() {
+            this.style.borderColor = '#6b9bd1';
+        });
+        
+        field.addEventListener('blur', function() {
+            if (this.style.borderColor === 'rgb(107, 155, 209)') {
+                this.style.borderColor = '#e9ecef';
+            }
+        });
+    });
+
+    // Intersection Observer for animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // Observe elements for animation
+    const animatedElements = document.querySelectorAll('.service-card, .specialist-card, .feature, .stat');
+    
+    animatedElements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
+
+    // Enhanced Logo Figure Interactions
+    const logoFigure = document.querySelector('.logo-figure');
+    
+    if (logoFigure) {
+        let isInteracting = false;
+        
+        // Click interaction - logo pulses with energy
+        logoFigure.addEventListener('click', function() {
+            if (isInteracting) return;
+            
+            isInteracting = true;
+            this.classList.add('excited');
+            
+            // Add temporary excited animation
+            const excitedStyle = document.createElement('style');
+            excitedStyle.textContent = `
+                .logo-figure.excited {
+                    animation: logo-excited 1s ease-in-out !important;
+                }
+                .logo-figure.excited .hero-logo {
+                    filter: drop-shadow(0 15px 40px rgba(56, 36, 23, 0.4)) !important;
+                }
+                @keyframes logo-excited {
+                    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+                    25% { transform: translate(-50%, -50%) scale(1.15) rotate(-3deg); }
+                    75% { transform: translate(-50%, -50%) scale(1.15) rotate(3deg); }
+                }
+            `;
+            document.head.appendChild(excitedStyle);
+            
+            // Reset after animation
+            setTimeout(() => {
+                this.classList.remove('excited');
+                excitedStyle.remove();
+                isInteracting = false;
+            }, 1000);
+        });
+        
+        // Add logo interaction styles
+        if (!document.querySelector('#logo-interactions-styles')) {
+            const interactionStyles = document.createElement('style');
+            interactionStyles.id = 'logo-interactions-styles';
+            interactionStyles.textContent = `
+                .logo-figure {
+                    user-select: none;
+                }
+            `;
+            document.head.appendChild(interactionStyles);
+        }
     }
 });
 
@@ -102,9 +214,6 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
         
         // Show success message
         showNotification('Дякуємо! Ми зв\'яжемося з вами найближчим часом.', 'success');
-        
-        // Log form data (for development - remove in production)
-        console.log('Form submitted:', data);
         
         // Here you would typically send the data to your server
         // fetch('/api/contact', {
@@ -218,105 +327,6 @@ function showNotification(message, type = 'info') {
     }, 5000);
 }
 
-// Form field animations and validation
-document.querySelectorAll('.form-group input, .form-group select, .form-group textarea').forEach(field => {
-    // Add 'has-value' class when field has content
-    function checkValue() {
-        if (field.value.trim() !== '') {
-            field.classList.add('has-value');
-        } else {
-            field.classList.remove('has-value');
-        }
-    }
-    
-    field.addEventListener('input', checkValue);
-    field.addEventListener('change', checkValue);
-    
-    // Check initial value
-    checkValue();
-    
-    // Remove error styling on focus
-    field.addEventListener('focus', function() {
-        this.style.borderColor = '#6b9bd1';
-    });
-    
-    field.addEventListener('blur', function() {
-        if (this.style.borderColor === 'rgb(107, 155, 209)') {
-            this.style.borderColor = '#e9ecef';
-        }
-    });
-});
 
-// Intersection Observer for animations
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
 
-// Observe elements for animation
-document.addEventListener('DOMContentLoaded', function() {
-    const animatedElements = document.querySelectorAll('.service-card, .specialist-card, .feature, .stat');
-    
-    animatedElements.forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(el);
-    });
-});
-
-// Add mobile menu styles
-const mobileMenuStyles = `
-    @media (max-width: 768px) {
-        .nav-menu {
-            position: fixed;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            flex-direction: column;
-            padding: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            transform: translateY(-100%);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-        
-        .nav-menu.active {
-            transform: translateY(0);
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-        
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-        
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -6px);
-        }
-    }
-`;
-
-// Add mobile styles to head
-if (!document.querySelector('#mobile-menu-styles')) {
-    const style = document.createElement('style');
-    style.id = 'mobile-menu-styles';
-    style.textContent = mobileMenuStyles;
-    document.head.appendChild(style);
-}
